@@ -70,7 +70,7 @@ class TestExport(unittest.TestCase):
         self._export.add_integration_types(RD.integration_type_content)
         dataset_name = 'INTEGRATIONTYPES'
         with vmap.VMAPImport(self._export.file_name) as import_actual:
-            dataset = import_actual.try_get_vmap_object('VMAP/SYSTEM/%s' % dataset_name)
+            dataset = import_actual.try_get_vmap_object(f'VMAP/SYSTEM/{dataset_name}')
             assert dataset is not None
             self.assert_dataset_correct(dataset, RD.integration_type_content)
 
@@ -87,16 +87,28 @@ class TestExport(unittest.TestCase):
             geometry_expected = self._import_expected.try_get_vmap_object(geometry_full_path)
             assert geometry_expected is not None
 
-            elements_actual = import_actual.try_get_vmap_object("%s/ELEMENTS" % geometry_full_path)
+            elements_actual = import_actual.try_get_vmap_object(
+                f"{geometry_full_path}/ELEMENTS"
+            )
+
             assert elements_actual is not None
-            elements_expected = self._import_expected.try_get_vmap_object("%s/ELEMENTS" % geometry_full_path)
+            elements_expected = self._import_expected.try_get_vmap_object(
+                f"{geometry_full_path}/ELEMENTS"
+            )
+
             assert elements_expected is not None
 
             self.assert_group_attrs_equal(elements_expected, elements_actual)
 
-            points_actual = import_actual.try_get_vmap_object("%s/POINTS" % geometry_full_path)
+            points_actual = import_actual.try_get_vmap_object(
+                f"{geometry_full_path}/POINTS"
+            )
+
             assert points_actual is not None
-            points_expected = self._import_expected.try_get_vmap_object("%s/POINTS" % geometry_full_path)
+            points_expected = self._import_expected.try_get_vmap_object(
+                f"{geometry_full_path}/POINTS"
+            )
+
             assert points_expected is not None
 
             self.assert_group_attrs_equal(points_expected, points_actual)
@@ -117,7 +129,7 @@ class TestExport(unittest.TestCase):
             self._export.add_geometry(geometry_name, 5)
 
         with vmap.VMAPImport(self._export.file_name) as import_actual:
-            geometry = import_actual.try_get_vmap_object('VMAP/GEOMETRY/%s' % geometry_name)
+            geometry = import_actual.try_get_vmap_object(f'VMAP/GEOMETRY/{geometry_name}')
             assert geometry is None
 
     def test_add_geometry_already_exists(self):
@@ -128,7 +140,10 @@ class TestExport(unittest.TestCase):
     def test_add_node_set(self):
         geometry_name = '1'
         geometry_set_name = '000000'
-        geometry_set_full_path = 'VMAP/GEOMETRY/%s/GEOMETRYSETS/%s' % (geometry_name, geometry_set_name)
+        geometry_set_full_path = (
+            f'VMAP/GEOMETRY/{geometry_name}/GEOMETRYSETS/{geometry_set_name}'
+        )
+
         geometry_set_expected = self._import_expected.try_get_geometry_set(geometry_name, geometry_set_name)
         assert geometry_set_expected is not None
         self._export.add_node_set(geometry_name, geometry_set_expected, self._mesh, 'ALL')
@@ -150,10 +165,10 @@ class TestExport(unittest.TestCase):
         geometry_name = '1'
         geometry_set_name_expected = '000003'
         geometry_set_name_actual = '000000'
-        geometry_set_full_path_expected = 'VMAP/GEOMETRY/%s/GEOMETRYSETS/%s' % (geometry_name,
-                                                                                geometry_set_name_expected)
-        geometry_set_full_path_actual = 'VMAP/GEOMETRY/%s/GEOMETRYSETS/%s' % (geometry_name,
-                                                                              geometry_set_name_actual)
+        geometry_set_full_path_expected = f'VMAP/GEOMETRY/{geometry_name}/GEOMETRYSETS/{geometry_set_name_expected}'
+
+        geometry_set_full_path_actual = f'VMAP/GEOMETRY/{geometry_name}/GEOMETRYSETS/{geometry_set_name_actual}'
+
         geometry_set_expected = self._import_expected.try_get_geometry_set(geometry_name, geometry_set_name_expected)
         assert geometry_set_expected is not None
         self._export.add_element_set(geometry_name, geometry_set_expected, self._mesh, 'ALL')
@@ -198,10 +213,10 @@ class TestExport(unittest.TestCase):
 
     def test_add_variable(self):
         state_name = 'STATE-2'
-        state_full_path = 'VMAP/VARIABLES/%s' % state_name
+        state_full_path = f'VMAP/VARIABLES/{state_name}'
         geometry_name = '1'
         variable_name = 'DISPLACEMENT'
-        variable_full_path = '%s/%s/%s' % (state_full_path, geometry_name, variable_name)
+        variable_full_path = f'{state_full_path}/{geometry_name}/{variable_name}'
         self._export.add_variable(state_name, geometry_name, variable_name, self._mesh)
         with vmap.VMAPImport(self._export.file_name) as import_actual:
             variable_group_expected = self._import_expected.try_get_vmap_object(variable_full_path)
@@ -267,7 +282,9 @@ class TestExport(unittest.TestCase):
                                       column_names=['RF1'], location=structures.VariableLocations.NODE)
         with vmap.VMAPImport(self._export.file_name) as import_actual:
             variable = import_actual.try_get_vmap_object(
-                'VMAP/VARIABLES/%s/%s/%s' % (state_name, geometry_name, variable_name))
+                f'VMAP/VARIABLES/{state_name}/{geometry_name}/{variable_name}'
+            )
+
             assert variable is None
 
     def test_add_variable_invalid_location(self):
@@ -281,7 +298,9 @@ class TestExport(unittest.TestCase):
                                       column_names=['dx', 'dy', 'dz'], location=4)
         with vmap.VMAPImport(self._export.file_name) as import_actual:
             variable = import_actual.try_get_vmap_object(
-                'VMAP/VARIABLES/%s/%s/%s' % (state_name, geometry_name, variable_name))
+                f'VMAP/VARIABLES/{state_name}/{geometry_name}/{variable_name}'
+            )
+
             assert variable is None
 
     def test_variable_location_displacement(self):
@@ -331,9 +350,7 @@ class TestExport(unittest.TestCase):
                 assert testval == attr_expected[1]
 
     def make_bytearray_if_str(self, value):
-        if isinstance(value, str):
-            return bytearray(value, 'utf-8')
-        return value
+        return bytearray(value, 'utf-8') if isinstance(value, str) else value
 
 
 @pytest.mark.parametrize('filename', [

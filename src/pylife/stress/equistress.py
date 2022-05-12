@@ -379,10 +379,15 @@ def mises(s11, s22, s33, s12, s13, s23):
             s11.shape == s13.shape and
             s11.shape == s23.shape), "Components' shape is not consistent."
 
-    mises_stress = np.sqrt(s11 ** 2 + s22 ** 2 + s33 ** 2
-                           - s11 * s22 - s11 * s33 - s22 * s33
-                           + 3 * (s12 ** 2 + s13 ** 2 + s23 ** 2))
-    return mises_stress
+    return np.sqrt(
+        s11**2
+        + s22**2
+        + s33**2
+        - s11 * s22
+        - s11 * s33
+        - s22 * s33
+        + 3 * (s12**2 + s13**2 + s23**2)
+    )
 
 
 def signed_mises_trace(s11, s22, s33, s12, s13, s23):

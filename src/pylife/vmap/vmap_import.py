@@ -93,9 +93,9 @@ class VMAPImport:
             if the geometry is not found of if the vmap file is corrupted
         """
         return pd.DataFrame(
-            self._file["/VMAP/GEOMETRY/%s/POINTS/MYCOORDINATES" % geometry][()],
-            columns = ['x', 'y', 'z'],
-            index = self._node_index(geometry)
+            self._file[f"/VMAP/GEOMETRY/{geometry}/POINTS/MYCOORDINATES"][()],
+            columns=['x', 'y', 'z'],
+            index=self._node_index(geometry),
         )
 
     def make_mesh(self, geometry, state=None):
@@ -289,9 +289,9 @@ class VMAPImport:
         """
         self._fail_if_unknown_geometry(geometry)
         self._fail_if_unknown_state(state)
-        if geometry not in self._file['/VMAP/VARIABLES/%s' % state].keys():
+        if geometry not in self._file[f'/VMAP/VARIABLES/{state}'].keys():
             raise KeyError("Geometry '%s' not available in state '%s'." % (geometry, state))
-        return list(self._file['/VMAP/VARIABLES/%s/%s' % (state, geometry)].keys())
+        return list(self._file[f'/VMAP/VARIABLES/{state}/{geometry}'].keys())
 
     def join_variable(self, var_name, state=None, column_names=None):
         """Joins a field output variable to the mesh
@@ -396,13 +396,13 @@ class VMAPImport:
     def _fail_if_geometry_unknown_in_state(self, geometry, state):
         self._fail_if_unknown_geometry(geometry)
         self._fail_if_unknown_state(state)
-        if geometry not in self._file['/VMAP/VARIABLES/%s' % state].keys():
+        if geometry not in self._file[f'/VMAP/VARIABLES/{state}'].keys():
             raise KeyError("Geometry '%s' not available in state '%s'." % (geometry, state))
 
     def _mesh_index(self, geometry):
         self._fail_if_unknown_geometry(geometry)
         connectivity = self._element_connectivity(geometry).connectivity
-        length = sum([el.shape[0] for el in connectivity])
+        length = sum(el.shape[0] for el in connectivity)
         index_np = np.empty((2, length), dtype=np.int64)
 
         i = 0
@@ -419,9 +419,12 @@ class VMAPImport:
             try:
                 column_names = vmap_structures.column_names[var_name][0]
             except KeyError:
-                raise KeyError("No column name for variable %s. Please provide with column_names parameter." % var_name)
+                raise KeyError(
+                    f"No column name for variable {var_name}. Please provide with column_names parameter."
+                )
 
-        state_group = self._file["/VMAP/VARIABLES/%s/%s" % (state, geometry)]
+
+        state_group = self._file[f"/VMAP/VARIABLES/{state}/{geometry}"]
         if var_name not in state_group.keys():
             raise KeyError("Variable '%s' not found in geometry '%s', '%s'."
                            % (var_name, geometry, state))
@@ -446,8 +449,8 @@ class VMAPImport:
 
     def _node_index(self, geometry):
         return pd.Index(
-            self._file["/VMAP/GEOMETRY/%s/POINTS/MYIDENTIFIERS" % geometry][:, 0],
-            name='node_id'
+            self._file[f"/VMAP/GEOMETRY/{geometry}/POINTS/MYIDENTIFIERS"][:, 0],
+            name='node_id',
         )
 
     def _make_index(self, var_tree, geometry):
@@ -477,7 +480,7 @@ class VMAPImport:
 
     def _geometry_sets(self, geometry, set_type):
         s_type = 0 if set_type == 'nsets' else 1
-        geometry_sets = self._file["/VMAP/GEOMETRY/%s/GEOMETRYSETS" % geometry]
+        geometry_sets = self._file[f"/VMAP/GEOMETRY/{geometry}/GEOMETRYSETS"]
         return {
             gset.attrs['MYSETNAME'].decode('UTF-8'): gset['MYGEOMETRYSETDATA'][()]
             for (_, gset) in geometry_sets.items() if gset.attrs['MYSETTYPE'] == s_type
@@ -485,8 +488,10 @@ class VMAPImport:
 
     def try_get_geometry_set(self, geometry_name, geometry_set_name):
         try:
-            geometry_set = self._file["/VMAP/GEOMETRY/%s/GEOMETRYSETS/%s/MYGEOMETRYSETDATA"
-                                      % (geometry_name, geometry_set_name)]
+            geometry_set = self._file[
+                f"/VMAP/GEOMETRY/{geometry_name}/GEOMETRYSETS/{geometry_set_name}/MYGEOMETRYSETDATA"
+            ]
+
             return pd.Index(geometry_set[()].flatten())
         except KeyError:
             return None

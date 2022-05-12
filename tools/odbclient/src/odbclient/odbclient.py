@@ -429,10 +429,7 @@ def _guess_abaqus_bin_windows():
         r"C:/Program Files/SIMULIA/2020/Products/win_b64/code/bin/ABQLauncher.exe",
         r"C:/Program Files/SIMULIA/2021/EstProducts/win_b64/code/bin/ABQLauncher.exe",
     ]
-    for guess in guesses:
-        if os.path.exists(guess):
-            return guess
-    return None
+    return next((guess for guess in guesses if os.path.exists(guess)), None)
 
 
 def _guess_pythonpath(python_env_path):

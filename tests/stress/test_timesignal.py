@@ -287,21 +287,17 @@ def ts_gaps():
 
 @pytest.fixture
 def df_gaps_prep(ts_gaps):
-    df_gaps_prep = pts._prepare_rolling(ts_gaps)
-    return df_gaps_prep
+    return pts._prepare_rolling(ts_gaps)
 
 
 @pytest.fixture
 def df_gaps_rolled(df_gaps_prep):
-    df_gaps_rolled = pts._roll_dataset(df_gaps_prep, window_size=5, overlap=2)
-    return df_gaps_rolled
+    return pts._roll_dataset(df_gaps_prep, window_size=5, overlap=2)
 
 
 @pytest.fixture
 def extraced_feature_gaps(df_gaps_rolled):
-    extraced_feature_gaps = pts._extract_feature_df(
-        df_gaps_rolled, feature="maximum")
-    return extraced_feature_gaps
+    return pts._extract_feature_df(df_gaps_rolled, feature="maximum")
 
 
 @pytest.fixture

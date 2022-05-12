@@ -58,14 +58,38 @@ class VMAPElementType(VMAPDataset):
 
     @property
     def dtype(self):
-        dt_type = np.dtype({"names": ["myIdentifier", "myTypeName", "myTypeDescription", "myNumberOfNodes",
-                                      "myDimension", "myShapeType", "myInterpolationType", "myIntegrationType",
-                                      "myNumberOfNormalComponents", "myNumberOfShearComponents", "myConnectivity",
-                                      "myFaceConnectivity"],
-                            "formats": ['<i4', string_dtype(), string_dtype(), '<i4', '<i4', '<i4', '<i4', '<i4',
-                                        '<i4', '<i4', h5py.special_dtype(vlen=np.dtype('int32')),
-                                        h5py.special_dtype(vlen=np.dtype('int32'))]})
-        return dt_type
+        return np.dtype(
+            {
+                "names": [
+                    "myIdentifier",
+                    "myTypeName",
+                    "myTypeDescription",
+                    "myNumberOfNodes",
+                    "myDimension",
+                    "myShapeType",
+                    "myInterpolationType",
+                    "myIntegrationType",
+                    "myNumberOfNormalComponents",
+                    "myNumberOfShearComponents",
+                    "myConnectivity",
+                    "myFaceConnectivity",
+                ],
+                "formats": [
+                    '<i4',
+                    string_dtype(),
+                    string_dtype(),
+                    '<i4',
+                    '<i4',
+                    '<i4',
+                    '<i4',
+                    '<i4',
+                    '<i4',
+                    '<i4',
+                    h5py.special_dtype(vlen=np.dtype('int32')),
+                    h5py.special_dtype(vlen=np.dtype('int32')),
+                ],
+            }
+        )
 
     @property
     def dataset_name(self):

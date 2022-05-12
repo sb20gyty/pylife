@@ -298,16 +298,11 @@ class Broadcaster:
 
     def _broadcasted_dataframe(self, parameter):
         data = np.empty((len(parameter), len(self._obj)))
-        df = pd.DataFrame(data, columns=self._obj.index).assign(**self._obj)
-        return df
+        return pd.DataFrame(data, columns=self._obj.index).assign(**self._obj)
 
 
 def _broadcast_to(obj, new_index):
-    if isinstance(obj, pd.DataFrame):
-        new = obj
-    else:
-        new = pd.DataFrame(obj)
-
+    new = obj if isinstance(obj, pd.DataFrame) else pd.DataFrame(obj)
     new = pd.DataFrame(index=new_index).join(new, how='left')
     if isinstance(new_index, pd.MultiIndex):
         new = new.reorder_levels(new_index.names)
@@ -377,18 +372,19 @@ class _IndexLevelCache:
 
     def restore_real_index(self, new_index):
 
-        if len(new_index.names) > 1:
-            real_index = pd.MultiIndex.from_arrays(
+        return (
+            pd.MultiIndex.from_arrays(
                 [
                     self.index_levels[name][new_index.get_level_values(name)]
                     for name in new_index.names
                 ],
-                names=new_index.names
+                names=new_index.names,
             )
-        else:
-            real_index = pd.Index(self.index_levels[new_index.name][new_index], name=new_index.name)
-
-        return real_index
+            if len(new_index.names) > 1
+            else pd.Index(
+                self.index_levels[new_index.name][new_index], name=new_index.name
+            )
+        )
 
     def _make_new_index(self, index):
         if len(index.names) == 1:

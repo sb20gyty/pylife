@@ -41,7 +41,11 @@ def test_missing_keys_one():
 
 
 def test_missing_keys_two():
-    assert set(foo_bar_baz.test_accessor_none.get_missing_keys(['foo', 'foobar', 'barfoo'])) == set(['foobar', 'barfoo'])
+    assert set(
+        foo_bar_baz.test_accessor_none.get_missing_keys(
+            ['foo', 'foobar', 'barfoo']
+        )
+    ) == {'foobar', 'barfoo'}
 
 
 def test_from_parameters_frame():
