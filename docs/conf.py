@@ -292,10 +292,10 @@ latex_documents = [
 # latex_domain_indices = True
 
 # -- External mapping --------------------------------------------------------
-python_version = ".".join(map(str, sys.version_info[0:2]))
+python_version = ".".join(map(str, sys.version_info[:2]))
 intersphinx_mapping = {
     "sphinx": ("http://www.sphinx-doc.org/en/master", None),
-    "python": ("https://docs.python.org/" + python_version, None),
+    "python": (f"https://docs.python.org/{python_version}", None),
     "matplotlib": ("https://matplotlib.org", None),
     "numpy": ("https://numpy.org/doc/stable/", None),
     "sklearn": ("https://scikit-learn.org/stable", None),

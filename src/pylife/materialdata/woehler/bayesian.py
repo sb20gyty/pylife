@@ -109,14 +109,14 @@ class Bayesian(Elementary):
         with pm.Model():
             family = pm.glm.families.StudentT()
             pm.glm.GLM.from_formula('y ~ x', data_dict, family=family)
-            trace_robust = pm.sample(self._nsamples,
-                                     target_accept=0.99,
-                                     random_seed=random_seed,
-                                     chains=chains,
-                                     tune=tune,
-                                     **kw)
-
-            return trace_robust
+            return pm.sample(
+                self._nsamples,
+                target_accept=0.99,
+                random_seed=random_seed,
+                chains=chains,
+                tune=tune,
+                **kw
+            )
 
     def _TN_trace(self, chains=3, random_seed=None, tune=1000, **kw):
         with pm.Model():

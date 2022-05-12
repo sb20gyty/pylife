@@ -94,10 +94,15 @@ class Gradient(Mesh):
         self._find_neighbor()
         self._calc_lst_sqr()
 
-        df_grad = pd.DataFrame({'node_id': self.nodes_id,
-                                "d%s_dx" % value_key: [*self.lst_sqr_grad_dx.values()],
-                                "d%s_dy" % value_key: [*self.lst_sqr_grad_dy.values()],
-                                "d%s_dz" % value_key: [*self.lst_sqr_grad_dz.values()]})
+        df_grad = pd.DataFrame(
+            {
+                'node_id': self.nodes_id,
+                f"d{value_key}_dx": [*self.lst_sqr_grad_dx.values()],
+                f"d{value_key}_dy": [*self.lst_sqr_grad_dy.values()],
+                f"d{value_key}_dz": [*self.lst_sqr_grad_dz.values()],
+            }
+        )
+
         df_grad = df_grad.set_index('node_id')
 
         return df_grad

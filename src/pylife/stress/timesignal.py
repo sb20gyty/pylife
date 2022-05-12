@@ -167,9 +167,11 @@ def resample_acc(df, fs=1):
     """
     index_new = np.arange(df.index.min(), df.index.max() + 1/fs, 1/fs)
 
-    df_rs = pd.DataFrame(df.apply(lambda x: np.interp(index_new, df.index, x)).values,
-                         index=index_new, columns=df.columns)
-    return df_rs
+    return pd.DataFrame(
+        df.apply(lambda x: np.interp(index_new, df.index, x)).values,
+        index=index_new,
+        columns=df.columns,
+    )
 
 
 def butter_bandpass(df, lowcut, highcut, order=5):
@@ -384,8 +386,7 @@ def _select_relevant_windows(prep_roll, extracted_features, comparison_column_ex
     """
     liste = list(pd.core.common.flatten(liste))
     liste = list(set(liste))
-    for i in range(len(liste)):
-        index_liste.append(relevant_windows.index[liste[i]])
+    index_liste.extend(relevant_windows.index[item] for item in liste)
     if method == "keep":
         relevant_windows = relevant_windows.drop(index_liste, axis=0)
     elif method == "remove":

@@ -193,8 +193,7 @@ class LoadHistogram(PylifeSignal, AbstractLoadCollective):
             left = func(values.left, operand_broadcast)
             right = func(values.right, operand_broadcast)
 
-            index = pd.IntervalIndex.from_arrays(left, right)
-            return index
+            return pd.IntervalIndex.from_arrays(left, right)
 
         skip = skip or []
         operand_broadcast, obj = self.broadcast(operand)
@@ -224,7 +223,7 @@ class _FromToMatrix(_LoadHistogramImpl):
 
     @property
     def index_names(self):
-        return set(['from', 'to'])
+        return {'from', 'to'}
 
     def _from_tos(self):
         fr = getattr(self._obj.index.get_level_values('from'), self._class_location).values
@@ -264,7 +263,7 @@ class _RangeMeanMatrix(_LoadHistogramImpl):
 
     @property
     def index_names(self):
-        return set(['range', 'mean'])
+        return {'range', 'mean'}
 
     def amplitude(self, location=None):
         return getattr(self._obj.index.get_level_values('range'), location or self._class_location)

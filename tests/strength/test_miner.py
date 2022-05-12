@@ -30,10 +30,13 @@ def make_collective_from_raw_data(raw_collective):
     amplitude_right = raw_collective[:, 0] + smallest_length/2
 
     decumulated = np.append(np.abs(np.diff(raw_collective[:, 1])), raw_collective[-1, 1])
-    coll = pd.Series(decumulated,
-                     index=pd.IntervalIndex.from_arrays(2.*amplitude_left, 2.*amplitude_right, name='range'),
-                     name='cycles')
-    return coll
+    return pd.Series(
+        decumulated,
+        index=pd.IntervalIndex.from_arrays(
+            2.0 * amplitude_left, 2.0 * amplitude_right, name='range'
+        ),
+        name='cycles',
+    )
 
 
 @pytest.fixture

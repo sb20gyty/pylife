@@ -69,9 +69,7 @@ def haibach(collective, k):
     hi = collective.cycles
 
     xi = S / S[hi > 0].max()
-    V = np.sum((hi * (xi**k)) / hi.sum())
-
-    return V
+    return np.sum((hi * (xi**k)) / hi.sum())
 
 
 def fkm(collective, k):
@@ -101,6 +99,4 @@ def fkm(collective, k):
     """
 
     V_haibach = haibach(collective, k)
-    V = V_haibach**(1./k)
-
-    return V
+    return V_haibach**(1./k)

@@ -136,8 +136,8 @@ class MaxLikeFull(Elementary):
             variable states.
         '''
         args = {}
-        args.update(fix_args)
-        args.update(zip(var_keys, var_args))
+        args |= fix_args
+        args |= zip(var_keys, var_args)
         args = self.__make_parameters(args)
 
         return -self._lh.likelihood_total(args['SD'], args['TS'], args['k_1'], args['ND'], args['TN'])

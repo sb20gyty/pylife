@@ -60,7 +60,10 @@ class Elementary:
         elif isinstance(fatigue_data, FatigueData):
             params = fatigue_data
         else:
-            raise ValueError("fatigue_data of type {} not understood: {}".format(type(fatigue_data), fatigue_data))
+            raise ValueError(
+                f"fatigue_data of type {type(fatigue_data)} not understood: {fatigue_data}"
+            )
+
         return params
 
     def analyze(self, **kwargs):

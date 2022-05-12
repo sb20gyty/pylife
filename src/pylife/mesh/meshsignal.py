@@ -173,7 +173,7 @@ class Mesh(PlainMesh):
     def _validate(self):
         super()._validate()
         self._cached_element_groups = None
-        if set(self._obj.index.names) != set(['element_id', 'node_id']):
+        if set(self._obj.index.names) != {'element_id', 'node_id'}:
             raise AttributeError("A mesh needs a pd.MultiIndex with the names `element_id` and `node_id`")
 
 

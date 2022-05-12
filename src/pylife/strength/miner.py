@@ -228,9 +228,4 @@ def effective_damage_sum(lifetime_multiple):
     d_max = 1.0
 
     d_m_no_limits = 2. / (lifetime_multiple**(1./4.))
-    d_m = min(
-        max(d_min, d_m_no_limits),
-        d_max
-    )
-
-    return d_m
+    return min(max(d_min, d_m_no_limits), d_max)

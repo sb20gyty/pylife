@@ -43,10 +43,28 @@ class VMAPSection(VMAPDataset):
 
     @property
     def dtype(self):
-        dt_type = np.dtype({"names": ["myIdentifier", "myName", "myType", "myMaterial", "myCoordinateSystem",
-                                      "myIntegrationType", "myThicknessType"],
-                            "formats": ['<i4', string_dtype(), '<i4', '<i4', '<i4', '<i4', '<i4']})
-        return dt_type
+        return np.dtype(
+            {
+                "names": [
+                    "myIdentifier",
+                    "myName",
+                    "myType",
+                    "myMaterial",
+                    "myCoordinateSystem",
+                    "myIntegrationType",
+                    "myThicknessType",
+                ],
+                "formats": [
+                    '<i4',
+                    string_dtype(),
+                    '<i4',
+                    '<i4',
+                    '<i4',
+                    '<i4',
+                    '<i4',
+                ],
+            }
+        )
 
     @property
     def dataset_name(self):

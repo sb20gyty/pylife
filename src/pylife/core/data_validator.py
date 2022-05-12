@@ -84,11 +84,7 @@ class DataValidator:
         `keys_to_check` not found in the `signal.index` are
         returned.
         """
-        missing_keys = []
-        for k in keys_to_check:
-            if k not in self.keys(signal):
-                missing_keys.append(k)
-        return missing_keys
+        return [k for k in keys_to_check if k not in self.keys(signal)]
 
     def fail_if_key_missing(self, signal, keys_to_check, msg=None):
         """Raise an exception if any key is missing in a signal object.

@@ -135,7 +135,7 @@ class HaighDiagram(PylifeSignal):
         index_names = five_segment_haigh_diagram.index.names + ['R']
 
         def make_index(h):
-            orig_index = [h.name] if not isinstance(h.name, Iterable) else list(h.name)
+            orig_index = list(h.name) if isinstance(h.name, Iterable) else [h.name]
 
             return pd.MultiIndex.from_tuples([
                 tuple(orig_index + [pd.Interval(1.0, np.inf)]),
@@ -197,12 +197,16 @@ class HaighDiagram(PylifeSignal):
             transformer.transform_cycles_in_interval(interval, R_goal)
 
         transfomed_cycles = transformer.transformed_cycles
-        res = pd.DataFrame({
-            'range': 2. * transfomed_cycles.amplitude,
-            'mean': transfomed_cycles.amplitude * ((1.+transfomed_cycles.R)/(1.-transfomed_cycles.R)).fillna(-1.0)
-        }, index=cycles.index)
-
-        return res
+        return pd.DataFrame(
+            {
+                'range': 2.0 * transfomed_cycles.amplitude,
+                'mean': transfomed_cycles.amplitude
+                * (
+                    (1.0 + transfomed_cycles.R) / (1.0 - transfomed_cycles.R)
+                ).fillna(-1.0),
+            },
+            index=cycles.index,
+        )
 
     def _validate(self):
 
@@ -425,12 +429,7 @@ class MeanstressTransformMatrix(CL.LoadHistogram):
         def aggregate(r, itvs, ranges, obj):
             ranges = ranges.xs(tuple(r), level=list(r.index))
             obj = obj.xs(tuple(r), level=list(r.index))
-            sums = (
-                itvs
-                .to_series()
-                .apply(lambda iv: sum_intervals(iv, ranges, obj))
-            )
-            return sums
+            return itvs.to_series().apply(lambda iv: sum_intervals(iv, ranges, obj))
 
         def sum_intervals(iv, ranges, obj):
             op_left = op.ge if iv.left == 0.0 else op.gt
